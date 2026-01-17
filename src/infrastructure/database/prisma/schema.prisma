@@ -1,0 +1,177 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// prisma tự động đọc file .env dù cho chưa cài .dotenv, nhưng chỉ đọc được giá trị 
+// trong env khi prisma đã start lên, những chỗ chưa start thì chịu
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL") 
+}
+
+model User {
+  id                     String    @id @db.Uuid
+  username               String    @unique @db.VarChar(50)
+  email                  String    @unique
+  roleId                 String    @map("role_id") @db.Uuid
+  password               String
+  passCode               String?
+  fullName               String    @map("full_name")
+  phoneNumber            String    @unique @map("phone_number")
+  dob                    DateTime  @db.Timestamptz(3)
+  gender                 Gender
+  avatar                 String?   @db.Text
+  status                 Status    @default(ACTIVE)
+  emailVerifyOtp         String?   @map("email_verify_otp") @db.VarChar()
+  emailVerifyOtpExpire   DateTime? @map("email_verify_otp_expire") @db.Timestamptz(3)
+  emailVerified          Boolean   @default(false) @map("email_verified")
+  passwordResetOtp       String?   @map("password_reset_otp") @db.VarChar()
+  passwordResetOtpExpire DateTime? @map("password_reset_otp_expire") @db.Timestamptz(3)
+  passCodeResetOtp       String?   @map("pass_code_reset_otp") @db.VarChar()
+  passCodeResetOtpExpire DateTime? @map("pass_code_reset_otp_expire") @db.Timestamptz(3)
+  require2FA             Boolean   @default(false) @map("require_2fa")
+  createdAt              DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt              DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  role          Role           @relation(fields: [roleId], references: [id])
+  wallet        Wallet?        
+  addresses     Address[]
+  cartItems     CartItem[]
+  refreshTokens RefreshToken[]
+  twofa         TwoFA?
+
+  @@map("users")
+}
+
+model Wallet {
+  id        String   @id @db.Uuid
+  userId    String   @unique @map("user_id") @db.Uuid
+  balance   Decimal  @default(0) @db.Decimal(15, 2)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("wallets")
+}
+
+model Address {
+  id            String   @id @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  recipientName String   @map("recipient_name")
+  recipientPhoneNumber   String   @map("phone_number")
+  province      String
+  ward          String
+  detail        String
+  isDefault     Boolean  @default(false) @map("is_default")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("addresses")
+}
+
+model CartItem {
+  id               String   @id @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  productId        String   @map("product_id") @db.Uuid
+  productVariantId String?  @map("product_variant_id") @db.Uuid
+  productName      String   @map("product_name")
+  productImage     String?  @map("product_image") @db.Text
+  variantSku       String?  @map("variant_sku")
+  price            Int
+  quantity         Int
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("cart_items")
+}
+
+model Role {
+  id          String   @id @db.Uuid
+  name        String   @unique
+  description String   @db.Text
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  users        User[]
+  roleCategory RoleCategory?
+  permissions  Permission[]
+
+  @@map("roles")
+}
+
+// Chỉ dành cho các loại Admin phụ trách các nhóm sản phẩm
+model RoleCategory {
+  id         String @id @db.Uuid
+  roleId     String @unique @map("role_id") @db.Uuid
+  categoryId String @unique @map("category_id") @db.Uuid
+
+  role Role @relation(fields: [roleId], references: [id])
+
+  @@map("role_categories")
+}
+
+model Permission {
+  id          String     @id @db.Uuid
+  name        String     @unique
+  description String?    @db.Text
+  method      HttpMethod
+  path        String
+  module      String
+  isPublic    Boolean?   @default(false) @map("is_public")
+  createdAt   DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime   @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  roles Role[]
+
+  @@map("permissions")
+}
+
+model RefreshToken {
+  id            String   @id @db.Uuid
+  token         String   @unique
+  is2FAVerified Boolean  @default(false) @map("is_2fa_verified")
+  userId        String   @map("user_id") @db.Uuid
+  userAgent     String   @map("user_agent")
+  iat           DateTime
+  exp           DateTime
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("refresh_tokens")
+}
+
+model TwoFA {
+  id        String   @id @db.Uuid
+  userId    String   @unique @map("user_id") @db.Uuid
+  value     String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("twofas")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum HttpMethod {
+  GET
+  POST
+  PUT
+  PATCH
+  DELETE
+}
+
+enum Status {
+  ACTIVE
+  BANNED
+}
