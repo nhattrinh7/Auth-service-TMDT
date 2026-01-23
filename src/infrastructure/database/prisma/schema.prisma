@@ -98,7 +98,7 @@ model Role {
   updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   users        User[]
-  roleCategory RoleCategory?
+  roleCategories RoleCategory[]
   permissions  Permission[]
 
   @@map("roles")
