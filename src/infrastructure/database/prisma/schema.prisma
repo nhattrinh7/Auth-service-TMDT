@@ -107,11 +107,14 @@ model Role {
 // Chỉ dành cho các loại Admin phụ trách các nhóm sản phẩm
 model RoleCategory {
   id         String @id @db.Uuid
-  roleId     String @unique @map("role_id") @db.Uuid
-  categoryId String @unique @map("category_id") @db.Uuid
+  roleId     String @map("role_id") @db.Uuid
+  categoryId String @map("category_id") @db.Uuid
+  level      Int?   // Lưu cấp độ của category: 1, 2, 3...
+  isLeaf     Boolean @default(false) @map("is_leaf") // Có phải là Category lá hay không
 
   role Role @relation(fields: [roleId], references: [id])
 
+  @@unique([roleId, categoryId])
   @@map("role_categories")
 }
 
