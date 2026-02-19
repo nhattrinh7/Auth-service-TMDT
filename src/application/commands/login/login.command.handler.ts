@@ -10,6 +10,7 @@ import { UserStatus } from '~/domain/enums/user.enum'
 import { comparePassword, hashRefreshToken } from '~/common/utils/bcrypt.util'
 import { MyJwtService } from '~/common/utils/jwt.util'
 import { UserMapper } from '~/application/mappers/user.mapper'
+import { PrismaService } from '~/infrastructure/database/prisma/prisma.service'
 
 @CommandHandler(LoginCommand)
 export class LoginHandler implements ICommandHandler<LoginCommand, LoginResponseDto> {
@@ -19,6 +20,7 @@ export class LoginHandler implements ICommandHandler<LoginCommand, LoginResponse
     @Inject(REFRESH_TOKEN_REPOSITORY)
     private readonly refreshRepository: IRefreshTokenRepository,
     private readonly jwtService: MyJwtService,
+    private readonly prisma: PrismaService,
   ) {}
 
   async execute(command: LoginCommand) {
@@ -31,6 +33,15 @@ export class LoginHandler implements ICommandHandler<LoginCommand, LoginResponse
 
     const isMatch = await comparePassword(password, user._password)
     if (!isMatch) throw new UnauthorizedException('Email or password is not correct')
+
+    // Lấy role name và permissions
+    const roleData = await this.prisma.role.findUnique({
+      where: { id: user.roleId },
+      include: { permissions: true }
+    })
+    
+    const roleName = roleData?.name || ''
+    const permissions = roleData?.permissions.map(p => p.name) || []
 
     // Nếu trùng khớp thì tạo accessToken và refreshToken
     const accessToken = await this.jwtService.signAccessToken({
@@ -57,6 +68,6 @@ export class LoginHandler implements ICommandHandler<LoginCommand, LoginResponse
     })
 
     // Trả về dữ liệu
-    return UserMapper.toLoginResponse(accessToken, refreshToken, user)
+    return UserMapper.toLoginResponse(accessToken, refreshToken, user, roleName, permissions)
   }
 }

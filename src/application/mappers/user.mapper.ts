@@ -21,7 +21,7 @@ export class UserMapper {
     } 
   }
 
-  static toLoginResponse(accessToken: string, refreshToken: string, user: User): LoginResponseDto{
+  static toLoginResponse(accessToken: string, refreshToken: string, user: User, roleName: string, permissions: string[]): LoginResponseDto{
     return {
       accessToken: accessToken,
       refreshToken: refreshToken,
@@ -40,6 +40,8 @@ export class UserMapper {
         emailVerified: user.emailVerified,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
+        roleName: roleName,
+        permissions: permissions
       }
     } 
   }

@@ -9,17 +9,27 @@ export class UserRepository implements IUserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async findByEmail(email: string): Promise<User | null> {
-    const userData = await this.prisma.user.findUnique({ where: { email } })
+    const userData = await this.prisma.user.findUnique({ 
+      where: { email },
+      include: {
+        role: {
+          include: {
+            permissions: true
+          }
+        }
+      }
+    })
     if (!userData) return null
 
     const user = UserMapper.toDomain(userData) // Map sang Entity trước, vì merge là merge cái dạng Entity ấy
     return user
   }
 
-  async save(user: User): Promise<User> {
+  async save(user: User, tx?: any): Promise<User> {
+    const client = tx ?? this.prisma
     const data = UserMapper.toPersistence(user)
     
-    const saved = await this.prisma.user.upsert({
+    const saved = await client.user.upsert({
       where: { id: user.id },
       update: data,
       create: data,

@@ -5,8 +5,10 @@ import { USER_REPOSITORY } from '~/domain/repositories/user.repository.interface
 import { CqrsModule } from '@nestjs/cqrs'
 import { REFRESH_TOKEN_REPOSITORY } from '~/domain/repositories/refresh-token.repository.interface'
 import { ROLE_REPOSITORY } from '~/domain/repositories/role.repository.interface'
+import { WALLET_REPOSITORY } from '~/domain/repositories/wallet.repository.interface'
 import { RefreshTokenRepository } from '~/infrastructure/database/repositories/refresh-token.repository'
 import { RoleRepository } from '~/infrastructure/database/repositories/role.repository'
+import { WalletRepository } from '~/infrastructure/database/repositories/wallet.repository'
 
 @Module({
   imports: [CqrsModule],
@@ -24,11 +26,17 @@ import { RoleRepository } from '~/infrastructure/database/repositories/role.repo
       provide: ROLE_REPOSITORY,
       useClass: RoleRepository,
     },
+    {
+      provide: WALLET_REPOSITORY,
+      useClass: WalletRepository,
+    },
   ],
   exports: [
+    PrismaService,
     USER_REPOSITORY,
     REFRESH_TOKEN_REPOSITORY,
     ROLE_REPOSITORY,
+    WALLET_REPOSITORY,
   ],
 })
 export class DatabaseModule {}

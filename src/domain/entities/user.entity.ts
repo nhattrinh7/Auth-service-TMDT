@@ -8,6 +8,7 @@ import { FullName } from '~/domain/value-objects/full-name.vo'
 import { OTP } from '~/domain/value-objects/otp.vo'
 import { generateUsername } from '~/common/utils/create-username.util'
 import { UserCreatedEvent } from '~/domain/events/user-created.event'
+import { Wallet } from '~/domain/entities/wallet.entity'
 
 
 export class User extends AggregateRoot {
@@ -75,5 +76,10 @@ export class User extends AggregateRoot {
 
   get _emailVerifyOtp(): OTP | null {
     return this.emailVerifyOtp
+  }
+
+  // Method để tạo wallet cho user (User là aggregate root của Wallet)
+  createWallet(): Wallet {
+    return Wallet.create({ userId: this.id })
   }
 }

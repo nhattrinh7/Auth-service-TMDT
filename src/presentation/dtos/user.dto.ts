@@ -59,6 +59,9 @@ const LoginResponseSchema = z.object({
     require2FA: true,
     createdAt: true,
     updatedAt: true
+  }).extend({
+    roleName: z.string(),
+    permissions: z.array(z.string())
   })
 })
 export class LoginResponseDto extends createZodDto(LoginResponseSchema) {}
