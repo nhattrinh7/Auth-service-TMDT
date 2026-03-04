@@ -17,7 +17,7 @@ import {
 } from '~/presentation/dtos/user.dto'
 
 @Controller('v1/auth')
-export class UserController {
+export class AuthController {
   constructor(
     private readonly commandBus: CommandBus,
   ) {}
@@ -75,7 +75,9 @@ export class UserController {
 
   @Post('verify-request')
   @HttpCode(HttpStatus.OK)
-  async verify(@Headers('Authorization') auth_header: string): Promise<any> {
+  async verify(
+    @Headers('Authorization') auth_header: string
+  ): Promise<any> {
     // Bỏ cái Bearer đi
     const accessToken = auth_header.replace('Bearer ', '').trim()
     
