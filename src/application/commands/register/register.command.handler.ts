@@ -35,6 +35,11 @@ export class RegisterHandler implements ICommandHandler<RegisterCommand, Registe
       throw new ConflictException('Email already in use')
     }
 
+    const existingPhone = await this.userRepository.findByPhoneNumber(phoneNumber)
+    if (existingPhone) {
+      throw new ConflictException('Phone number already in use')
+    }
+
     const hashedPassword = await hashPassword(password)
 
     // Lấy id của role mặc định là role Customer

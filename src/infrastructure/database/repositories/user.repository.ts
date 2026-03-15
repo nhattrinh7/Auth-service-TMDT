@@ -8,6 +8,22 @@ import { IUserRepository } from '~/domain/repositories/user.repository.interface
 export class UserRepository implements IUserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async findByPhoneNumber(phoneNumber: string): Promise<User | null> {
+    const userData = await this.prisma.user.findUnique({ 
+      where: { phoneNumber },
+      include: {
+        role: {
+          include: {
+            permissions: true
+          }
+        }
+      }
+    })
+    if (!userData) return null
+
+    return UserMapper.toDomain(userData)
+  }
+
   async findByEmail(email: string): Promise<User | null> {
     const userData = await this.prisma.user.findUnique({ 
       where: { email },
