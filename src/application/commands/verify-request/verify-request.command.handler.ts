@@ -77,8 +77,6 @@ export class VerifyRequestHandler implements ICommandHandler<VerifyRequestComman
       }
     }
 
-    console.log('categoryIds', categoryIds)
-
     // 7. Trả về dữ liệu
     return {
       userId,
