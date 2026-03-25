@@ -93,6 +93,7 @@ export class RefreshTokenResponseDto extends createZodDto(RefresTokenResponseSch
 const VerifyRequestResponseSchema = z.object({
   userId: z.string(),
   roleId: z.string(),
+  categoryIds: z.array(z.string()).optional(),
 })
 export class VerifyRequestResponseDto extends createZodDto(VerifyRequestResponseSchema) {}
 

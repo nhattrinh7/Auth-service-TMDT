@@ -1,4 +1,4 @@
-import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common'
+ import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import Joi from 'joi'
 import { ZodValidationPipe } from 'nestjs-zod'
@@ -29,6 +29,7 @@ import { RequestLoggingMiddleware } from '~/common/middleware/request-logging.mi
       isGlobal: true,
       validationSchema: Joi.object({
         DATABASE_URL: Joi.string().required(),
+        REDIS_URL: Joi.string().required(),
       }),
       validationOptions: {
         abortEarly: true, // Show 1 errors per times

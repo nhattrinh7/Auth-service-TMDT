@@ -76,13 +76,14 @@ export class AuthController {
   @Post('verify-request')
   @HttpCode(HttpStatus.OK)
   async verify(
-    @Headers('Authorization') auth_header: string
+    @Headers('Authorization') auth_header: string,
+    @Headers('x-original-method') method: string,   // Kong forward header
+    @Headers('x-original-uri') uri: string,          // Kong forward header
   ): Promise<any> {
-    // Bỏ cái Bearer đi
     const accessToken = auth_header.replace('Bearer ', '').trim()
-    
+
     const result = await this.commandBus.execute<VerifyRequestCommand, VerifyRequestResponseDto>(
-      new VerifyRequestCommand(accessToken),
+      new VerifyRequestCommand(accessToken, method, uri),
     )
 
     return result 
@@ -96,7 +97,7 @@ export class AuthController {
   ): Promise<any> {
     const accessToken = auth_header.replace('Bearer ', '').trim()
     
-    await this.commandBus.execute<VerifyRequestCommand, VerifyRequestResponseDto>(
+    await this.commandBus.execute(
       new LogoutCommand(accessToken, userAgent),
     )
 
