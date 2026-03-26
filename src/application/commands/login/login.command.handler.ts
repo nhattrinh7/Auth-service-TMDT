@@ -11,6 +11,7 @@ import { comparePassword, hashRefreshToken } from '~/common/utils/bcrypt.util'
 import { MyJwtService } from '~/common/utils/jwt.util'
 import { UserMapper } from '~/application/mappers/user.mapper'
 import { PrismaService } from '~/infrastructure/database/prisma/prisma.service'
+import { DEFAULT_USER_AGENT } from '~/common/constants/index.constants'
 
 @CommandHandler(LoginCommand)
 export class LoginHandler implements ICommandHandler<LoginCommand, LoginResponseDto> {
@@ -61,7 +62,7 @@ export class LoginHandler implements ICommandHandler<LoginCommand, LoginResponse
      await this.refreshRepository.saveRefreshToken({
       userId: user.id,
       token: hashedRefreshToken,
-      userAgent: userAgent || 'Unknown',
+      userAgent: userAgent || DEFAULT_USER_AGENT,
       iat: new Date(decodedToken.iat * 1000),
       exp: new Date(decodedToken.exp * 1000),
       is2FAVerified: false,

@@ -6,14 +6,7 @@ import { MyJwtService } from '~/common/utils/jwt.util'
 import { ROLE_REPOSITORY } from '~/domain/repositories/role.repository.interface'
 import type { IRoleRepository } from '~/domain/repositories/role.repository.interface'
 import { PermissionCacheService } from '~/infrastructure/redis/permission-cache.service'
-
-// Các role không phải admin → không cần trả categoryIds
-const NON_ADMIN_ROLES = new Set([
-  'CUSTOMER',
-  'SELLER',
-  'SHIPPER',
-  'WAREHOUSE_SCANNER',
-])
+import { NON_ADMIN_ROLES } from '~/common/constants/index.constants'
 
 @CommandHandler(VerifyRequestCommand)
 export class VerifyRequestHandler implements ICommandHandler<VerifyRequestCommand, VerifyRequestResponseDto> {
