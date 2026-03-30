@@ -9,3 +9,14 @@ export interface ICreateUserProps {
   dob: Date
   gender: Gender
 }
+
+export interface ICreateGoogleUserProps {
+  email: string
+  roleId: string
+  hashedPassword: string
+  fullName: string
+  phoneNumber: string
+  dob: Date
+  gender: Gender
+  avatar?: string | null
+}

@@ -2,6 +2,7 @@ import { Controller, Post, Body, HttpCode, HttpStatus, Headers   } from '@nestjs
 import { CommandBus } from '@nestjs/cqrs'
 import { RegisterCommand } from '~/application/commands/register/register.command'
 import { LoginCommand } from '~/application/commands/login/login.command'
+import { GoogleLoginCommand } from '~/application/commands/google-login/google-login.command'
 import { VerifyEmailCommand } from '~/application/commands/verify-email/verify-email.command'
 import { RefreshTokenCommand } from '~/application/commands/refresh-token/refresh-token.command'
 import { VerifyRequestCommand } from '~/application/commands/verify-request/verify-request.command'
@@ -13,6 +14,7 @@ import {
   RegisterResponseDto, 
   LoginBodyDto,
   LoginResponseDto,
+  GoogleLoginBodyDto,
   VerifyEmailBodyDto,
   RefreshTokenBodyDto,
   VerifyRequestResponseDto,
@@ -49,6 +51,20 @@ export class AuthController {
       new LoginCommand(email, password, userAgent),
     )
     return { message: 'Login succesfully!', data: result }
+  }
+
+  @Post('google-login')
+  @HttpCode(HttpStatus.OK)
+  async googleLogin(
+    @Body() body: GoogleLoginBodyDto,
+    @Headers('user-agent') userAgent: string,
+  ): Promise<any> {
+    const { credential } = body
+
+    const result = await this.commandBus.execute<GoogleLoginCommand, LoginResponseDto>(
+      new GoogleLoginCommand(credential, userAgent),
+    )
+    return { message: 'Login with Google succesfully!', data: result }
   }
 
   @Post('verify-email')

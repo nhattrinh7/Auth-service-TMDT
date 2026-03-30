@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import { CqrsModule } from '@nestjs/cqrs'
 import { RegisterHandler } from '~/application/commands/register/register.command.handler'
 import { LoginHandler } from '~/application/commands/login/login.command.handler'
+import { GoogleLoginHandler } from '~/application/commands/google-login/google-login.command.handler'
 import { VerifyEmailHandler } from '~/application/commands/verify-email/verify-email.command.handler'
 import { DatabaseModule } from '~/infrastructure/database/database.module'
 import { MessagingModule } from '~/infrastructure/messaging/messaging.module'
@@ -17,6 +18,7 @@ import { ResetPasswordHandler } from '~/application/commands/reset-password/rese
 const CommandHandlers = [
   RegisterHandler,
   LoginHandler,
+  GoogleLoginHandler,
   VerifyEmailHandler,
   RefreshTokenHandler,
   VerifyRequestHandler,

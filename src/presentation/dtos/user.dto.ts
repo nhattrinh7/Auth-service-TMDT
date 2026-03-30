@@ -41,6 +41,12 @@ const LoginBodySchema = z.object({
 }).strict()
 export class LoginBodyDto extends createZodDto(LoginBodySchema) {}
 
+// Google login
+const GoogleLoginBodySchema = z.object({
+  credential: z.string().min(1),
+}).strict()
+export class GoogleLoginBodyDto extends createZodDto(GoogleLoginBodySchema) {}
+
 const LoginResponseSchema = z.object({
   accessToken: z.string(),
   refreshToken: z.string(),

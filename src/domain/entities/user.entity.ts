@@ -1,7 +1,7 @@
 import { AggregateRoot } from '@nestjs/cqrs'
 import { Gender, UserStatus } from '~/domain/enums/user.enum'
 import { v4 as uuidv4 } from 'uuid'
-import { ICreateUserProps } from '~/domain/interfaces/user.interface'
+import { ICreateGoogleUserProps, ICreateUserProps } from '~/domain/interfaces/user.interface'
 import { PhoneNumber } from '~/domain/value-objects/phone-number.vo'
 import { Email } from '~/domain/value-objects/email.vo'
 import { FullName } from '~/domain/value-objects/full-name.vo'
@@ -66,6 +66,32 @@ export class User extends AggregateRoot {
       user.emailVerifyOtp!.getCode()!,
       user.emailVerifyOtp!.getExpiry(),
     ))
+
+    return user
+  }
+
+  static createFromGoogle(props: ICreateGoogleUserProps): User {
+    const user = new User(
+      uuidv4(),
+      generateUsername(),
+      Email.create(props.email),
+      props.roleId,
+      props.hashedPassword,
+      null,
+      FullName.create(props.fullName),
+      PhoneNumber.create(props.phoneNumber),
+      props.dob,
+      props.gender,
+      props.avatar ?? null,
+      UserStatus.ACTIVE,
+      false,
+      null,
+      true,
+      null,
+      null,
+      new Date(),
+      new Date(),
+    )
 
     return user
   }
