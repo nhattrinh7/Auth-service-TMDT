@@ -78,6 +78,25 @@ export class User extends AggregateRoot {
     return this.emailVerifyOtp
   }
 
+  get _passwordResetOtp(): OTP | null {
+    return this.passwordResetOtp
+  }
+
+  setPasswordResetOtp(otp: OTP | null): void {
+    this.passwordResetOtp = otp
+    this.updatedAt = new Date()
+  }
+
+  clearPasswordResetOtp(): void {
+    this.passwordResetOtp = null
+    this.updatedAt = new Date()
+  }
+
+  setPassword(hashedPassword: string): void {
+    this.password = hashedPassword
+    this.updatedAt = new Date()
+  }
+
   // Method để tạo wallet cho user (User là aggregate root của Wallet)
   createWallet(): Wallet {
     return Wallet.create({ userId: this.id })

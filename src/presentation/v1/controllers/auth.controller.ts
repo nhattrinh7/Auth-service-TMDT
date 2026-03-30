@@ -6,6 +6,8 @@ import { VerifyEmailCommand } from '~/application/commands/verify-email/verify-e
 import { RefreshTokenCommand } from '~/application/commands/refresh-token/refresh-token.command'
 import { VerifyRequestCommand } from '~/application/commands/verify-request/verify-request.command'
 import { LogoutCommand } from '~/application/commands/logout/logout.command'
+import { ForgotPasswordCommand } from '~/application/commands/forgot-password/forgot-password.command'
+import { ResetPasswordCommand } from '~/application/commands/reset-password/reset-password.command'
 import { 
   RegisterBodyDto, 
   RegisterResponseDto, 
@@ -14,6 +16,8 @@ import {
   VerifyEmailBodyDto,
   RefreshTokenBodyDto,
   VerifyRequestResponseDto,
+  ForgotPasswordBodyDto,
+  ResetPasswordBodyDto,
 } from '~/presentation/dtos/user.dto'
 
 @Controller('v1/auth')
@@ -56,6 +60,28 @@ export class AuthController {
       new VerifyEmailCommand(email, otp),
     )
     return { message: 'Verify email succesfully!' }
+  }
+
+  @Post('forgot-password')
+  @HttpCode(HttpStatus.OK)
+  async forgotPassword(@Body() body: ForgotPasswordBodyDto): Promise<any> {
+    const { email } = body
+
+    await this.commandBus.execute<ForgotPasswordCommand>(
+      new ForgotPasswordCommand(email),
+    )
+    return { message: 'OTP đã được gửi đến email của bạn' }
+  }
+
+  @Post('reset-password')
+  @HttpCode(HttpStatus.OK)
+  async resetPassword(@Body() body: ResetPasswordBodyDto): Promise<any> {
+    const { email, otp, newPassword } = body
+
+    await this.commandBus.execute<ResetPasswordCommand>(
+      new ResetPasswordCommand(email, otp, newPassword),
+    )
+    return { message: 'Đặt lại mật khẩu thành công' }
   }
 
   @Post('refresh-token')

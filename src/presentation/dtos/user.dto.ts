@@ -88,6 +88,22 @@ const RefresTokenResponseSchema = z.object({
 export class RefreshTokenResponseDto extends createZodDto(RefresTokenResponseSchema) {}
 
 
+// Forgot password
+const ForgotPasswordBodySchema = z.object({
+  email: z.email(),
+}).strict()
+export class ForgotPasswordBodyDto extends createZodDto(ForgotPasswordBodySchema) {}
+
+
+// Reset password
+const ResetPasswordBodySchema = z.object({
+  email: z.email(),
+  otp: z.string().length(6),
+  newPassword: z.string().min(8),
+}).strict()
+export class ResetPasswordBodyDto extends createZodDto(ResetPasswordBodySchema) {}
+
+
 
 // Verify request
 const VerifyRequestResponseSchema = z.object({

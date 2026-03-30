@@ -11,6 +11,8 @@ import { RefreshTokenHandler } from '~/application/commands/refresh-token/refres
 import { VerifyRequestHandler } from '~/application/commands/verify-request/verify-request.command.handler'
 import { JwtModule } from '@nestjs/jwt'
 import { LogoutHandler } from '~/application/commands/logout/logout.command.handler'
+import { ForgotPasswordHandler } from '~/application/commands/forgot-password/forgot-password.command.handler'
+import { ResetPasswordHandler } from '~/application/commands/reset-password/reset-password.command.handler'
 
 const CommandHandlers = [
   RegisterHandler,
@@ -18,7 +20,9 @@ const CommandHandlers = [
   VerifyEmailHandler,
   RefreshTokenHandler,
   VerifyRequestHandler,
-  LogoutHandler
+  LogoutHandler,
+  ForgotPasswordHandler,
+  ResetPasswordHandler,
 ]
 
 const QueryHandlers = [
