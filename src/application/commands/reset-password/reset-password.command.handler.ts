@@ -3,12 +3,15 @@ import { BadRequestException, Inject, NotFoundException, UnprocessableEntityExce
 import { ResetPasswordCommand } from '~/application/commands/reset-password/reset-password.command'
 import { compareOTP, hashPassword } from '~/common/utils/bcrypt.util'
 import { type IUserRepository, USER_REPOSITORY } from '~/domain/repositories/user.repository.interface'
+import { type ILoginAttemptService, LOGIN_ATTEMPT_SERVICE } from '~/domain/contracts/login-attempt.service.interface'
 
 @CommandHandler(ResetPasswordCommand)
 export class ResetPasswordHandler implements ICommandHandler<ResetPasswordCommand, void> {
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly userRepository: IUserRepository,
+    @Inject(LOGIN_ATTEMPT_SERVICE)
+    private readonly loginAttemptService: ILoginAttemptService,
   ) {}
 
   async execute(command: ResetPasswordCommand) {
@@ -34,5 +37,8 @@ export class ResetPasswordHandler implements ICommandHandler<ResetPasswordComman
     user.setPassword(hashedPassword)
     user.clearPasswordResetOtp()
     await this.userRepository.save(user)
+
+    // Reset login attempts khi đổi mật khẩu thành công → mở khóa tài khoản
+    await this.loginAttemptService.resetAttempts(email)
   }
 }

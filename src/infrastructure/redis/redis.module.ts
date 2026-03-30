@@ -2,6 +2,8 @@ import { Module, Global } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import Redis from 'ioredis'
 import { PermissionCacheService } from '~/infrastructure/redis/permission-cache.service'
+import { LoginAttemptService } from '~/infrastructure/redis/login-attempt.service'
+import { LOGIN_ATTEMPT_SERVICE } from '~/domain/contracts/login-attempt.service.interface'
 
 export const REDIS_CLIENT = 'REDIS_CLIENT'
 
@@ -17,7 +19,12 @@ export const REDIS_CLIENT = 'REDIS_CLIENT'
       inject: [ConfigService],
     },
     PermissionCacheService,
+    LoginAttemptService,
+    {
+      provide: LOGIN_ATTEMPT_SERVICE,
+      useClass: LoginAttemptService,
+    },
   ],
-  exports: [REDIS_CLIENT, PermissionCacheService],
+  exports: [REDIS_CLIENT, PermissionCacheService, LOGIN_ATTEMPT_SERVICE],
 })
 export class RedisModule {}
