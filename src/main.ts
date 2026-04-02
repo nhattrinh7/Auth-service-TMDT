@@ -1,5 +1,6 @@
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter'
 import { NestFactory } from '@nestjs/core'
+import helmet from 'helmet'
 import { AppModule } from './app.module'
 import { Transport, MicroserviceOptions } from '@nestjs/microservices'
 import { ConfigService } from '@nestjs/config'
@@ -10,6 +11,8 @@ import { corsOptions } from './configs/cors.config'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
+
+  app.use(helmet())
 
   app.setGlobalPrefix('api')
   // Nestjs mặc định  mình throw exception thì nó xử lí lỗi sẵn rồi
@@ -49,3 +52,4 @@ async function bootstrap() {
 
 // eslint-disable-next-line no-console
 bootstrap().catch(console.error)
+
