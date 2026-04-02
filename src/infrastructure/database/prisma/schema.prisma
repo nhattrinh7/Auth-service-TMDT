@@ -115,6 +115,8 @@ model RoleCategory {
   role Role @relation(fields: [roleId], references: [id])
 
   @@unique([roleId, categoryId])
+  @@index([roleId, level])
+  @@index([roleId, isLeaf])
   @@map("role_categories")
 }
 
@@ -146,6 +148,7 @@ model RefreshToken {
 
   user User @relation(fields: [userId], references: [id])
 
+  @@index([userId, userAgent])
   @@map("refresh_tokens")
 }
 
