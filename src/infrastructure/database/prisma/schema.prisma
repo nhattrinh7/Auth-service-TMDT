@@ -77,6 +77,7 @@ model CartItem {
   userId           String   @map("user_id") @db.Uuid
   productId        String   @map("product_id") @db.Uuid
   productVariantId String?  @map("product_variant_id") @db.Uuid
+  shopId           String   @map("shop_id") @db.Uuid 
   productName      String   @map("product_name")
   productImage     String?  @map("product_image") @db.Text
   variantSku       String?  @map("variant_sku")
