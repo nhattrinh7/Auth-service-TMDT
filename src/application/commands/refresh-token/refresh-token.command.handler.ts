@@ -4,7 +4,7 @@ import { RefreshTokenCommand } from '~/application/commands/refresh-token/refres
 import { RefreshTokenResponseDto } from '~/presentation/dtos/user.dto'
 import { Inject, NotFoundException, UnauthorizedException } from '@nestjs/common'
 import { MyJwtService } from '~/common/utils/jwt.util'
-import { hashRefreshToken } from '~/common/utils/bcrypt.util'
+import { compareRefreshToken, hashRefreshToken } from '~/common/utils/bcrypt.util'
 import type { IRefreshTokenRepository } from '~/domain/repositories/refresh-token.repository.interface'
 
 @CommandHandler(RefreshTokenCommand)
@@ -26,7 +26,9 @@ export class RefreshTokenHandler implements ICommandHandler<RefreshTokenCommand,
     const refreshTokenRecord = await this.refreshRepository.findRefreshToken(jwtPayload.userId, userAgent)
     if (!refreshTokenRecord) throw new NotFoundException(`RefreshToken doesn't exist, cannot refresh token`)
 
-    if (refreshTokenRecord.token !== refreshToken) throw new UnauthorizedException('Refresh token is not match')
+    // So sánh bằng bcrypt compare vì token được hash trước khi lưu DB
+    const isMatch = await compareRefreshToken(refreshToken, refreshTokenRecord.token)
+    if (!isMatch) throw new UnauthorizedException('Refresh token is not match')
     
     // Check token đã hết hạn chưa
     if (new Date() > refreshTokenRecord.exp) {

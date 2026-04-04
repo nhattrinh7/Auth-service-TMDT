@@ -46,12 +46,6 @@ export class VerifyRequestHandler implements ICommandHandler<VerifyRequestComman
       p => p.method === method && p.path === normalizedUri
     )
 
-    console.log('uri', uri)
-    console.log('normalizedUri', normalizedUri)
-    console.log('method', method)
-    console.log('permissions', permissions)
-    console.log('matchedPermission', matchedPermission)
-
     // 5. Nếu không tìm thấy permission → role không có quyền → 403
     if (!matchedPermission) {
       throw new ForbiddenException('Bạn không có quyền truy cập tài nguyên này')

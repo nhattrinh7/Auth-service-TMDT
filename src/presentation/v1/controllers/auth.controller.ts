@@ -107,7 +107,6 @@ export class AuthController {
     @Headers('user-agent') userAgent: string,
   ): Promise<any> {
     const { refreshToken } = body
-    // console.log('refreshToken', refreshToken)
 
     const result = await this.commandBus.execute<RefreshTokenCommand>(
       new RefreshTokenCommand(refreshToken, userAgent),
