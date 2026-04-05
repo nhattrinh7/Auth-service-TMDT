@@ -10,7 +10,7 @@ import { RabbitMQPublisher } from '~/infrastructure/messaging/publishers/rabbitm
     //     name: 'EVENTS',
     //     transport: Transport.RMQ,
     //     options: {
-    //       urls: ['amqp://admin:admin123@localhost:5672'],
+    //       urls: [`amqp://admin:admin123@${process.env.RABBITMQ_HOST || 'localhost'}:5672`],
     //       exchange: 'events_exchange',
     //       exchangeType: 'topic',
     //        // có persist message
@@ -22,7 +22,7 @@ import { RabbitMQPublisher } from '~/infrastructure/messaging/publishers/rabbitm
         name: 'NOTIFICATION_CLIENT',
         transport: Transport.RMQ,
         options: {
-          urls: ['amqp://admin:admin123@localhost:5672'],
+          urls: [`amqp://admin:admin123@${process.env.RABBITMQ_HOST || 'localhost'}:5672`],
           queue: 'notification_queue',
           persistent: true,
         },

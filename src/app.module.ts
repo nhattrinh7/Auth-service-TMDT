@@ -26,10 +26,21 @@ import { RequestLoggingMiddleware } from '~/common/middleware/request-logging.mi
       }
     ]),
     ConfigModule.forRoot({
+      envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,      
       isGlobal: true,
       validationSchema: Joi.object({
         DATABASE_URL: Joi.string().required(),
         REDIS_URL: Joi.string().required(),
+      
+        SERVICE_NAME: Joi.string().required(),
+        SERVICE_HOST: Joi.string().required(),
+        PORT: Joi.number().required(),
+        ACCESS_TOKEN_SECRET: Joi.string().allow('').optional(),
+        REFRESH_TOKEN_SECRET: Joi.string().allow('').optional(),
+        ACCESS_TOKEN_EXPIRATION: Joi.string().required(),
+        REFRESH_TOKEN_EXPIRATION: Joi.string().required(),
+        GOOGLE_CLIENT_ID: Joi.string().required(),
+        RABBITMQ_HOST: Joi.string().required(),
       }),
       validationOptions: {
         abortEarly: true, // Show 1 errors per times

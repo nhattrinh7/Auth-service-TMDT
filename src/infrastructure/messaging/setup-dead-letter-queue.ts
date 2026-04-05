@@ -2,7 +2,7 @@ import * as amqp from 'amqplib'
 
 export async function setupDeadLetterQueue() {
   try {
-    const connection = await amqp.connect('amqp://admin:admin123@localhost:5672')
+    const connection = await amqp.connect(`amqp://admin:admin123@${process.env.RABBITMQ_HOST || 'localhost'}:5672`)
     const channel = await connection.createChannel()
 
     // Tạo Common Dead Letter Queue - DLQ chung cho tất cả service
