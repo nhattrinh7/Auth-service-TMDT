@@ -9,14 +9,14 @@ export const UserSchema = z.object({
   roleId: z.uuid(),
   fullName: z.string().min(2),
   phoneNumber: z.string().min(10).max(11),
-  dob: z.coerce.date(),
+  dob: z.string(),
   gender: z.enum([Gender.MALE, Gender.FEMALE, Gender.OTHER]),
   avatar: z.url().nullable(),
   status: z.enum([UserStatus.ACTIVE, UserStatus.BANNED]),
   emailVerified: z.boolean(),
   require2FA: z.boolean(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
 })
 export class UserDto extends createZodDto(UserSchema) {}
 
@@ -28,7 +28,7 @@ const RegisterBodySchema = z
     fullName: z.string(),
     phoneNumber: z.string(),
     gender: z.enum([Gender.MALE, Gender.FEMALE, Gender.OTHER]),
-    dob: z.coerce.date(),
+    dob: z.string(),
   })
   .strict()
 export class RegisterBodyDto extends createZodDto(RegisterBodySchema) {}
