@@ -1,4 +1,3 @@
-
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
 import type { IRefreshTokenRepository } from '~/domain/repositories/refresh-token.repository.interface'
 import { REFRESH_TOKEN_REPOSITORY } from '~/domain/repositories/refresh-token.repository.interface'
@@ -17,7 +16,7 @@ export class LogoutHandler implements ICommandHandler<LogoutCommand, void> {
   async execute(command: LogoutCommand) {
     const { accessToken, userAgent } = command
 
-    // Check accessToken 
+    // Check accessToken
     const payload = await this.jwtService.verifyAccessToken(accessToken)
 
     // Ok thì tìm và xóa refreshToken

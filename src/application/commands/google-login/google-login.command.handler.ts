@@ -82,7 +82,7 @@ export class GoogleLoginHandler implements ICommandHandler<GoogleLoginCommand, L
         avatar,
       })
 
-      user = await this.prisma.transaction(async (tx) => {
+      user = await this.prisma.transaction(async tx => {
         const createdUser = await this.userRepository.save(newUser, tx)
         const wallet = createdUser.createWallet()
         await this.walletRepository.save(wallet, tx)
@@ -103,23 +103,23 @@ export class GoogleLoginHandler implements ICommandHandler<GoogleLoginCommand, L
 
     const roleData = await this.prisma.role.findUnique({
       where: { id: user.roleId },
-      include: { permissions: true }
+      include: { permissions: true },
     })
-    
-    const roleName = roleData?.name || '' 
+
+    const roleName = roleData?.name || ''
     const permissions = roleData?.permissions.map(p => p.name) || []
 
     const accessToken = await this.jwtService.signAccessToken({
       userId: user.id,
-      roleId: user.roleId
+      roleId: user.roleId,
     })
     const refreshToken = await this.jwtService.signRefreshToken({
       userId: user.id,
-      roleId: user.roleId
+      roleId: user.roleId,
     })
 
     const decodedToken = await this.jwtService.decodeToken(refreshToken)
-    const hashedRefreshToken  = await hashRefreshToken(refreshToken)
+    const hashedRefreshToken = await hashRefreshToken(refreshToken)
 
     await this.refreshRepository.saveRefreshToken({
       userId: user.id,

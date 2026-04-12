@@ -47,10 +47,7 @@ export class MyJwtService {
    * @param timestamps - Object chứa iat và exp từ DB record
    * @returns JWT token string với iat và exp giữ nguyên
    */
-  async signRefreshTokenWithTimestamps(
-    payload: Payload,
-    timestamps: { iat: Date; exp: Date }
-  ): Promise<string> {
+  async signRefreshTokenWithTimestamps(payload: Payload, timestamps: { iat: Date; exp: Date }): Promise<string> {
     // Convert Date object sang Unix timestamp (seconds)
     const iatSeconds = Math.floor(timestamps.iat.getTime() / 1000)
     const expSeconds = Math.floor(timestamps.exp.getTime() / 1000)
@@ -60,12 +57,12 @@ export class MyJwtService {
       {
         ...payload,
         iat: iatSeconds,
-        exp: expSeconds
+        exp: expSeconds,
       },
       {
         secret: this.refreshTokenSecret,
-        noTimestamp: true // Không tự động thêm iat
-      }
+        noTimestamp: true, // Không tự động thêm iat
+      },
     )
   }
 

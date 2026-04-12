@@ -9,15 +9,15 @@ export class UserRepository implements IUserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async findByPhoneNumber(phoneNumber: string): Promise<User | null> {
-    const userData = await this.prisma.user.findUnique({ 
+    const userData = await this.prisma.user.findUnique({
       where: { phoneNumber },
       include: {
         role: {
           include: {
-            permissions: true
-          }
-        }
-      }
+            permissions: true,
+          },
+        },
+      },
     })
     if (!userData) return null
 
@@ -25,15 +25,15 @@ export class UserRepository implements IUserRepository {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    const userData = await this.prisma.user.findUnique({ 
+    const userData = await this.prisma.user.findUnique({
       where: { email },
       include: {
         role: {
           include: {
-            permissions: true
-          }
-        }
-      }
+            permissions: true,
+          },
+        },
+      },
     })
     if (!userData) return null
 
@@ -44,7 +44,7 @@ export class UserRepository implements IUserRepository {
   async save(user: User, tx?: any): Promise<User> {
     const client = tx ?? this.prisma
     const data = UserMapper.toPersistence(user)
-    
+
     const saved = await client.user.upsert({
       where: { id: user.id },
       update: data,

@@ -16,13 +16,13 @@ export class OTP {
   }
 
   isValid(inputCode: string): boolean {
-    if (!this.code || !this.expireAt) return false;
-    return this.code === inputCode && new Date() < this.expireAt;
+    if (!this.code || !this.expireAt) return false
+    return this.code === inputCode && new Date() < this.expireAt
   }
 
   isExpired(): boolean {
-    if (!this.expireAt) return true; // null cũng coi là expired
-    return new Date() >= this.expireAt;
+    if (!this.expireAt) return true // null cũng coi là expired
+    return new Date() >= this.expireAt
   }
 
   getCode(): string | null {
@@ -30,8 +30,8 @@ export class OTP {
   }
 
   getExpiry(): string {
-    if (!this.expireAt) return '0';
-    const minutes = Math.ceil((this.expireAt.getTime() - Date.now()) / 60000);
-    return String(minutes);
+    if (!this.expireAt) return '0'
+    const minutes = Math.ceil((this.expireAt.getTime() - Date.now()) / 60000)
+    return String(minutes)
   }
 }

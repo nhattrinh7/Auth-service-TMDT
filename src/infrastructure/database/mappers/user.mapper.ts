@@ -22,22 +22,22 @@ export class UserMapper {
       prismaUser.avatar,
       prismaUser.status,
       prismaUser.require2FA,
-      
+
       // ✅ Reconstruct OTP Value Objects từ DB
       prismaUser.emailVerifyOtp && prismaUser.emailVerifyOtpExpire
         ? OTP.from(prismaUser.emailVerifyOtp, prismaUser.emailVerifyOtpExpire)
         : null,
-      
+
       prismaUser.emailVerified,
-      
+
       prismaUser.passwordResetOtp && prismaUser.passwordResetOtpExpire
         ? OTP.from(prismaUser.passwordResetOtp, prismaUser.passwordResetOtpExpire)
         : null,
-      
+
       prismaUser.passCodeResetOtp && prismaUser.passCodeResetOtpExpire
         ? OTP.from(prismaUser.passCodeResetOtp, prismaUser.passCodeResetOtpExpire)
         : null,
-      
+
       prismaUser.createdAt,
       prismaUser.updatedAt,
     )
@@ -56,19 +56,19 @@ export class UserMapper {
       phoneNumber: user.phoneNumber.value,
       dob: user.dob,
       gender: user.gender,
-      
+
       // ✅ Extract code và expiry từ OTP Value Objects
       emailVerifyOtp: user['emailVerifyOtp']?.code ?? null,
       emailVerifyOtpExpire: user['emailVerifyOtp']?.expireAt ?? null,
-      
+
       emailVerified: user.emailVerified,
-      
+
       passwordResetOtp: user['passwordResetOtp']?.code ?? null,
       passwordResetOtpExpire: user['passwordResetOtp']?.expireAt ?? null,
-      
+
       passCodeResetOtp: user['passCodeResetOtp']?.code ?? null,
       passCodeResetOtpExpire: user['passCodeResetOtp']?.expireAt ?? null,
-      
+
       avatar: user.avatar,
       status: user.status,
       require2FA: user.require2FA,

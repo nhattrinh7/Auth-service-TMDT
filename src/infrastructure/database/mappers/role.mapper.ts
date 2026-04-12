@@ -2,16 +2,9 @@
 import { Role as PrismaRole } from '@prisma/client'
 import { Role } from '~/domain/entities/role.entity'
 
-
 export class RoleMapper {
   static toDomain(prismaRole: PrismaRole): Role {
-    return new Role(
-      prismaRole.id,
-      prismaRole.name,
-      prismaRole.description,
-      prismaRole.createdAt,
-      prismaRole.updatedAt,
-    )
+    return new Role(prismaRole.id, prismaRole.name, prismaRole.description, prismaRole.createdAt, prismaRole.updatedAt)
   }
 
   static toPersistence(role: Role) {

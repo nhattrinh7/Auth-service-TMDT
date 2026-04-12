@@ -8,10 +8,7 @@ export abstract class BaseRetryConsumer {
   protected readonly baseDelay = 1000
   protected readonly logger = new Logger(this.constructor.name)
 
-  protected async handleWithRetry<T>(
-    context: RmqContext,
-    handler: () => Promise<T>,
-  ): Promise<T | undefined> {
+  protected async handleWithRetry<T>(context: RmqContext, handler: () => Promise<T>): Promise<T | undefined> {
     const channel = context.getChannelRef()
     const originalMsg = context.getMessage()
     const retryCount = originalMsg.properties.headers?.['x-retry-count'] || 0
@@ -51,26 +48,22 @@ export abstract class BaseRetryConsumer {
         const maxDelay = baseDelayForRetry * 1.25
         const jitterDelay = Math.floor(minDelay + Math.random() * (maxDelay - minDelay))
 
-        const originalRoutingKey =
-          originalMsg.properties.headers?.['x-original-routing-key'] || context.getPattern()
+        const originalRoutingKey = originalMsg.properties.headers?.['x-original-routing-key'] || context.getPattern()
 
-        this.logger.warn(`[kongRequestId=${kongRequestId}] Retry ${retryCount + 1}/${this.maxRetries} after ${jitterDelay}ms — routing: ${originalRoutingKey}`)
+        this.logger.warn(
+          `[kongRequestId=${kongRequestId}] Retry ${retryCount + 1}/${this.maxRetries} after ${jitterDelay}ms — routing: ${originalRoutingKey}`,
+        )
 
         setTimeout(() => {
-          channel.publish(
-            'events_exchange',
-            originalRoutingKey,
-            originalMsg.content,
-            {
-              persistent: true,
-              headers: {
-                ...originalMsg.properties.headers,
-                'x-retry-count': retryCount + 1,
-                'x-original-routing-key': originalRoutingKey,
-                'kong-request-id': kongRequestId,
-              },
+          channel.publish('events_exchange', originalRoutingKey, originalMsg.content, {
+            persistent: true,
+            headers: {
+              ...originalMsg.properties.headers,
+              'x-retry-count': retryCount + 1,
+              'x-original-routing-key': originalRoutingKey,
+              'kong-request-id': kongRequestId,
             },
-          )
+          })
         }, jitterDelay)
 
         channel.ack(originalMsg)

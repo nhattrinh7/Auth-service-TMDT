@@ -6,10 +6,10 @@ export class UserMapper {
     return {
       id: user.id,
       username: user.username,
-      email: user.email.value,              // ← Extract string từ Value Object
+      email: user.email.value, // ← Extract string từ Value Object
       roleId: user.roleId,
-      fullName: user.fullName.value,        // ← Extract string
-      phoneNumber: user.phoneNumber.value,  // ← Extract string
+      fullName: user.fullName.value, // ← Extract string
+      phoneNumber: user.phoneNumber.value, // ← Extract string
       dob: user.dob,
       gender: user.gender,
       avatar: user.avatar,
@@ -18,20 +18,26 @@ export class UserMapper {
       emailVerified: user.emailVerified,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
-    } 
+    }
   }
 
-  static toLoginResponse(accessToken: string, refreshToken: string, user: User, roleName: string, permissions: string[]): LoginResponseDto{
+  static toLoginResponse(
+    accessToken: string,
+    refreshToken: string,
+    user: User,
+    roleName: string,
+    permissions: string[],
+  ): LoginResponseDto {
     return {
       accessToken: accessToken,
       refreshToken: refreshToken,
       user: {
         id: user.id,
         username: user.username,
-        email: user.email.value,              
+        email: user.email.value,
         roleId: user.roleId,
-        fullName: user.fullName.value,        
-        phoneNumber: user.phoneNumber.value,  
+        fullName: user.fullName.value,
+        phoneNumber: user.phoneNumber.value,
         dob: user.dob,
         gender: user.gender,
         avatar: user.avatar,
@@ -41,8 +47,8 @@ export class UserMapper {
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
         roleName: roleName,
-        permissions: permissions
-      }
-    } 
+        permissions: permissions,
+      },
+    }
   }
 }

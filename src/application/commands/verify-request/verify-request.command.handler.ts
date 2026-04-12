@@ -42,9 +42,7 @@ export class VerifyRequestHandler implements ICommandHandler<VerifyRequestComman
     const normalizedUri = uri.replace(/^\/api/, '')
 
     // 4. Tìm permission khớp (method + path)
-    const matchedPermission = permissions.find(
-      p => p.method === method && p.path === normalizedUri
-    )
+    const matchedPermission = permissions.find(p => p.method === method && p.path === normalizedUri)
 
     // 5. Nếu không tìm thấy permission → role không có quyền → 403
     if (!matchedPermission) {

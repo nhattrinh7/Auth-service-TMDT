@@ -31,12 +31,6 @@ import { WalletRepository } from '~/infrastructure/database/repositories/wallet.
       useClass: WalletRepository,
     },
   ],
-  exports: [
-    PrismaService,
-    USER_REPOSITORY,
-    REFRESH_TOKEN_REPOSITORY,
-    ROLE_REPOSITORY,
-    WALLET_REPOSITORY,
-  ],
+  exports: [PrismaService, USER_REPOSITORY, REFRESH_TOKEN_REPOSITORY, ROLE_REPOSITORY, WALLET_REPOSITORY],
 })
 export class DatabaseModule {}

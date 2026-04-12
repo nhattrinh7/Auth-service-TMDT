@@ -17,7 +17,6 @@ export class Address {
   ) {}
 
   static create(props: ICreateAddressProps): Address {
-
     const address = new Address(
       uuidv4(),
       props.userId,

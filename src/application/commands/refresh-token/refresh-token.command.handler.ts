@@ -29,7 +29,7 @@ export class RefreshTokenHandler implements ICommandHandler<RefreshTokenCommand,
     // So sánh bằng bcrypt compare vì token được hash trước khi lưu DB
     const isMatch = await compareRefreshToken(refreshToken, refreshTokenRecord.token)
     if (!isMatch) throw new UnauthorizedException('Refresh token is not match')
-    
+
     // Check token đã hết hạn chưa
     if (new Date() > refreshTokenRecord.exp) {
       await this.refreshRepository.deleteRefreshToken(refreshTokenRecord.id)
@@ -39,19 +39,22 @@ export class RefreshTokenHandler implements ICommandHandler<RefreshTokenCommand,
     // Tạo accessToken và refreshToken mới
     const newAccessToken = await this.jwtService.signAccessToken({
       userId: jwtPayload.userId,
-      roleId: jwtPayload.roleId
-    })
-    
-    const newRefreshToken = await this.jwtService.signRefreshTokenWithTimestamps({
-      userId: jwtPayload.userId,
-      roleId: jwtPayload.roleId
-    }, {
-      iat: refreshTokenRecord.iat, // Giữ nguyên iat từ DB
-      exp: refreshTokenRecord.exp // Giữ nguyên exp từ DB
+      roleId: jwtPayload.roleId,
     })
 
+    const newRefreshToken = await this.jwtService.signRefreshTokenWithTimestamps(
+      {
+        userId: jwtPayload.userId,
+        roleId: jwtPayload.roleId,
+      },
+      {
+        iat: refreshTokenRecord.iat, // Giữ nguyên iat từ DB
+        exp: refreshTokenRecord.exp, // Giữ nguyên exp từ DB
+      },
+    )
+
     const newHashedRefreshToken = await hashRefreshToken(newRefreshToken)
-    
+
     // Update token string trong DB
     await this.refreshRepository.updateRefreshToken(refreshTokenRecord.id, newHashedRefreshToken)
 

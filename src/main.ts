@@ -1,5 +1,7 @@
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter'
 import { NestFactory } from '@nestjs/core'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+
 import helmet from 'helmet'
 import { AppModule } from './app.module'
 import { Transport, MicroserviceOptions } from '@nestjs/microservices'
@@ -15,6 +17,11 @@ async function bootstrap() {
   app.use(helmet())
 
   app.setGlobalPrefix('api')
+
+  const config = new DocumentBuilder().setTitle('auth-service API Docs').setVersion('1.0').build()
+  const document = SwaggerModule.createDocument(app, config)
+  SwaggerModule.setup('api/v1/auth/docs', app, document)
+
   // Nestjs mặc định  mình throw exception thì nó xử lí lỗi sẵn rồi
   // dùng cái filter này để customize lại response thôi
   app.useGlobalFilters(new GlobalExceptionFilter())
@@ -52,4 +59,3 @@ async function bootstrap() {
 
 // eslint-disable-next-line no-console
 bootstrap().catch(console.error)
-

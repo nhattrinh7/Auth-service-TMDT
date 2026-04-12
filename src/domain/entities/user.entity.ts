@@ -10,7 +10,6 @@ import { generateUsername } from '~/common/utils/create-username.util'
 import { UserCreatedEvent } from '~/domain/events/user-created.event'
 import { Wallet } from '~/domain/entities/wallet.entity'
 
-
 export class User extends AggregateRoot {
   constructor(
     public readonly id: string,
@@ -60,12 +59,14 @@ export class User extends AggregateRoot {
       new Date(),
     )
 
-    user.apply(new UserCreatedEvent(
-      user.id, 
-      user.email.getValue(), 
-      user.emailVerifyOtp!.getCode()!,
-      user.emailVerifyOtp!.getExpiry(),
-    ))
+    user.apply(
+      new UserCreatedEvent(
+        user.id,
+        user.email.getValue(),
+        user.emailVerifyOtp!.getCode()!,
+        user.emailVerifyOtp!.getExpiry(),
+      ),
+    )
 
     return user
   }

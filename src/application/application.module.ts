@@ -27,27 +27,13 @@ const CommandHandlers = [
   ResetPasswordHandler,
 ]
 
-const QueryHandlers = [
-  
-]
+const QueryHandlers = []
 
-const EventHandlers = [
-  UserCreatedEventHandler
-]
+const EventHandlers = [UserCreatedEventHandler]
 
 @Module({
-  imports: [
-    CqrsModule,
-    DatabaseModule,
-    MessagingModule,
-    JwtModule.register({})
-  ],
-  providers: [
-    ...CommandHandlers,
-    ...QueryHandlers,
-    ...EventHandlers,
-    MyJwtService
-  ],
+  imports: [CqrsModule, DatabaseModule, MessagingModule, JwtModule.register({})],
+  providers: [...CommandHandlers, ...QueryHandlers, ...EventHandlers, MyJwtService],
   exports: [],
 })
 export class ApplicationModule {}

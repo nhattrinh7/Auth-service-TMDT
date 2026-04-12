@@ -21,30 +21,35 @@ export const UserSchema = z.object({
 export class UserDto extends createZodDto(UserSchema) {}
 
 // Register
-const RegisterBodySchema = z.object({
-  email: z.email(),
-  password: z.string(),
-  fullName: z.string(),
-  phoneNumber: z.string(),
-  gender: z.enum([Gender.MALE, Gender.FEMALE, Gender.OTHER]),
-  dob: z.coerce.date(),
-}).strict()
+const RegisterBodySchema = z
+  .object({
+    email: z.email(),
+    password: z.string(),
+    fullName: z.string(),
+    phoneNumber: z.string(),
+    gender: z.enum([Gender.MALE, Gender.FEMALE, Gender.OTHER]),
+    dob: z.coerce.date(),
+  })
+  .strict()
 export class RegisterBodyDto extends createZodDto(RegisterBodySchema) {}
 
 export class RegisterResponseDto extends createZodDto(UserSchema) {}
 
-
 // Login
-const LoginBodySchema = z.object({
-  email: z.email(),
-  password: z.string(),
-}).strict()
+const LoginBodySchema = z
+  .object({
+    email: z.email(),
+    password: z.string(),
+  })
+  .strict()
 export class LoginBodyDto extends createZodDto(LoginBodySchema) {}
 
 // Google login
-const GoogleLoginBodySchema = z.object({
-  credential: z.string().min(1),
-}).strict()
+const GoogleLoginBodySchema = z
+  .object({
+    credential: z.string().min(1),
+  })
+  .strict()
 export class GoogleLoginBodyDto extends createZodDto(GoogleLoginBodySchema) {}
 
 const LoginResponseSchema = z.object({
@@ -64,52 +69,50 @@ const LoginResponseSchema = z.object({
     emailVerified: true,
     require2FA: true,
     createdAt: true,
-    updatedAt: true
+    updatedAt: true,
   }).extend({
     roleName: z.string(),
-    permissions: z.array(z.string())
-  })
+    permissions: z.array(z.string()),
+  }),
 })
 export class LoginResponseDto extends createZodDto(LoginResponseSchema) {}
-
 
 // Verify email
 const VerifyEmailBodySchema = z.object({
   otp: z.string().length(6),
-  email: z.email()
+  email: z.email(),
 })
 export class VerifyEmailBodyDto extends createZodDto(VerifyEmailBodySchema) {}
 
-
 // Refresh token
 const RefresTokenBodySchema = z.object({
-  refreshToken: z.string()
+  refreshToken: z.string(),
 })
 export class RefreshTokenBodyDto extends createZodDto(RefresTokenBodySchema) {}
 
 const RefresTokenResponseSchema = z.object({
   accessToken: z.string(),
-  refreshToken: z.string()
+  refreshToken: z.string(),
 })
 export class RefreshTokenResponseDto extends createZodDto(RefresTokenResponseSchema) {}
 
-
 // Forgot password
-const ForgotPasswordBodySchema = z.object({
-  email: z.email(),
-}).strict()
+const ForgotPasswordBodySchema = z
+  .object({
+    email: z.email(),
+  })
+  .strict()
 export class ForgotPasswordBodyDto extends createZodDto(ForgotPasswordBodySchema) {}
 
-
 // Reset password
-const ResetPasswordBodySchema = z.object({
-  email: z.email(),
-  otp: z.string().length(6),
-  newPassword: z.string().min(8),
-}).strict()
+const ResetPasswordBodySchema = z
+  .object({
+    email: z.email(),
+    otp: z.string().length(6),
+    newPassword: z.string().min(8),
+  })
+  .strict()
 export class ResetPasswordBodyDto extends createZodDto(ResetPasswordBodySchema) {}
-
-
 
 // Verify request
 const VerifyRequestResponseSchema = z.object({
@@ -118,4 +121,3 @@ const VerifyRequestResponseSchema = z.object({
   categoryIds: z.array(z.string()).optional(),
 })
 export class VerifyRequestResponseDto extends createZodDto(VerifyRequestResponseSchema) {}
-

@@ -14,9 +14,7 @@ const DEFAULT_TTL = 3600 // 1 giờ
 
 @Injectable()
 export class PermissionCacheService {
-  constructor(
-    @Inject(REDIS_CLIENT) private readonly redis: Redis,
-  ) {}
+  constructor(@Inject(REDIS_CLIENT) private readonly redis: Redis) {}
 
   // ===== PERMISSIONS =====
   async getPermissions(roleId: string): Promise<CachedPermission[] | null> {
@@ -26,12 +24,7 @@ export class PermissionCacheService {
   }
 
   async setPermissions(roleId: string, permissions: CachedPermission[]): Promise<void> {
-    await this.redis.set(
-      `${PERMISSIONS_PREFIX}:${roleId}:permissions`,
-      JSON.stringify(permissions),
-      'EX',
-      DEFAULT_TTL,
-    )
+    await this.redis.set(`${PERMISSIONS_PREFIX}:${roleId}:permissions`, JSON.stringify(permissions), 'EX', DEFAULT_TTL)
   }
 
   // ===== CATEGORY IDS (top-level) =====

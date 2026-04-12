@@ -12,9 +12,7 @@ const REDIS_CLIENT = 'REDIS_CLIENT'
 
 @Injectable()
 export class LoginAttemptService implements ILoginAttemptService {
-  constructor(
-    @Inject(REDIS_CLIENT) private readonly redis: Redis,
-  ) {}
+  constructor(@Inject(REDIS_CLIENT) private readonly redis: Redis) {}
 
   async isLocked(email: string): Promise<boolean> {
     const locked = await this.redis.get(`${LOGIN_LOCKOUT_PREFIX}:${email}`)
@@ -34,12 +32,7 @@ export class LoginAttemptService implements ILoginAttemptService {
 
     // Đạt ngưỡng → set lockout flag
     if (attempts >= MAX_LOGIN_ATTEMPTS) {
-      await this.redis.set(
-        `${LOGIN_LOCKOUT_PREFIX}:${email}`,
-        '1',
-        'EX',
-        LOCKOUT_DURATION_SECONDS,
-      )
+      await this.redis.set(`${LOGIN_LOCKOUT_PREFIX}:${email}`, '1', 'EX', LOCKOUT_DURATION_SECONDS)
     }
 
     return attempts
@@ -53,6 +46,6 @@ export class LoginAttemptService implements ILoginAttemptService {
   async getRemainingAttempts(email: string): Promise<number> {
     const key = `${LOGIN_ATTEMPTS_PREFIX}:${email}`
     const attempts = await this.redis.get(key)
-    return MAX_LOGIN_ATTEMPTS - (parseInt(attempts || '0', 10))
+    return MAX_LOGIN_ATTEMPTS - parseInt(attempts || '0', 10)
   }
 }

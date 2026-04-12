@@ -41,7 +41,7 @@ export class LoginHandler implements ICommandHandler<LoginCommand, LoginResponse
     const isLocked = await this.loginAttemptService.isLocked(email)
     if (isLocked) {
       throw new ForbiddenException(
-        'Tài khoản đã bị khóa tạm thời do đăng nhập sai quá nhiều lần. Vui lòng thử lại sau 15 phút.'
+        'Tài khoản đã bị khóa tạm thời do đăng nhập sai quá nhiều lần. Vui lòng thử lại sau 15 phút.',
       )
     }
 
@@ -53,13 +53,11 @@ export class LoginHandler implements ICommandHandler<LoginCommand, LoginResponse
 
       if (remaining <= 0) {
         throw new ForbiddenException(
-          'Tài khoản đã bị khóa tạm thời do đăng nhập sai quá nhiều lần. Vui lòng thử lại sau 15 phút.'
+          'Tài khoản đã bị khóa tạm thời do đăng nhập sai quá nhiều lần. Vui lòng thử lại sau 15 phút.',
         )
       }
 
-      throw new UnauthorizedException(
-        `Email hoặc mật khẩu không đúng. Bạn còn ${remaining} lần thử.`
-      )
+      throw new UnauthorizedException(`Email hoặc mật khẩu không đúng. Bạn còn ${remaining} lần thử.`)
     }
 
     // Đăng nhập thành công → reset counter
@@ -68,28 +66,28 @@ export class LoginHandler implements ICommandHandler<LoginCommand, LoginResponse
     // Lấy role name và permissions
     const roleData = await this.prisma.role.findUnique({
       where: { id: user.roleId },
-      include: { permissions: true }
+      include: { permissions: true },
     })
-    
+
     const roleName = roleData?.name || ''
     const permissions = roleData?.permissions.map(p => p.name) || []
 
     // Nếu trùng khớp thì tạo accessToken và refreshToken
     const accessToken = await this.jwtService.signAccessToken({
       userId: user.id,
-      roleId: user.roleId
+      roleId: user.roleId,
     })
     const refreshToken = await this.jwtService.signRefreshToken({
       userId: user.id,
-      roleId: user.roleId
+      roleId: user.roleId,
     })
 
     const decodedToken = await this.jwtService.decodeToken(refreshToken)
 
-    const hashedRefreshToken  = await hashRefreshToken(refreshToken)
+    const hashedRefreshToken = await hashRefreshToken(refreshToken)
 
     // Lưu refreshToken vào Database
-     await this.refreshRepository.saveRefreshToken({
+    await this.refreshRepository.saveRefreshToken({
       userId: user.id,
       token: hashedRefreshToken,
       userAgent: userAgent || DEFAULT_USER_AGENT,

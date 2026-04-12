@@ -7,10 +7,7 @@ export const hashPassword = async (password: string): Promise<string> => {
 
 // bcryptjs đọc salt trong hashedPasswordFromDB để hash passwordFromFE rồi so sánh
 // nên ko cần lo về salt của 2 thằng này giống nhau không
-export const comparePassword = async (
-  passwordFromFE: string,
-  hashedPasswordFromDB: string,
-): Promise<boolean> => {
+export const comparePassword = async (passwordFromFE: string, hashedPasswordFromDB: string): Promise<boolean> => {
   const result = await compare(passwordFromFE, hashedPasswordFromDB)
   return result
 }
@@ -22,10 +19,7 @@ export const hashOTP = async (otp: string): Promise<string> => {
   return hashedOTP
 }
 
-export const compareOTP = async (
-  OtpFromFE: string,
-  hashedOtpFromDB: string,
-): Promise<boolean> => {
+export const compareOTP = async (OtpFromFE: string, hashedOtpFromDB: string): Promise<boolean> => {
   const result = await compare(OtpFromFE, hashedOtpFromDB)
   return result
 }

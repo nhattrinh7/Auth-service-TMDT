@@ -1,11 +1,4 @@
-import {
-  ExceptionFilter,
-  Catch,
-  ArgumentsHost,
-  HttpException,
-  HttpStatus,
-  Logger,
-} from '@nestjs/common'
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, Logger } from '@nestjs/common'
 import { Response } from 'express'
 
 @Catch()
@@ -37,10 +30,10 @@ export class GlobalExceptionFilter implements ExceptionFilter {
           status = HttpStatus.UNPROCESSABLE_ENTITY
         }
       }
-    // Nếu là Error thường
+      // Nếu là Error thường
     } else if (exception instanceof Error) {
       message = exception.message
-      
+
       // Check nếu là lỗi JWT expired
       if (message.includes('jwt expired')) {
         status = HttpStatus.GONE // 410

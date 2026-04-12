@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, Headers   } from '@nestjs/common'
+import { Controller, Post, Body, HttpCode, HttpStatus, Headers } from '@nestjs/common'
 import { CommandBus } from '@nestjs/cqrs'
 import { RegisterCommand } from '~/application/commands/register/register.command'
 import { LoginCommand } from '~/application/commands/login/login.command'
@@ -9,9 +9,9 @@ import { VerifyRequestCommand } from '~/application/commands/verify-request/veri
 import { LogoutCommand } from '~/application/commands/logout/logout.command'
 import { ForgotPasswordCommand } from '~/application/commands/forgot-password/forgot-password.command'
 import { ResetPasswordCommand } from '~/application/commands/reset-password/reset-password.command'
-import { 
-  RegisterBodyDto, 
-  RegisterResponseDto, 
+import {
+  RegisterBodyDto,
+  RegisterResponseDto,
   LoginBodyDto,
   LoginResponseDto,
   GoogleLoginBodyDto,
@@ -24,9 +24,7 @@ import {
 
 @Controller('v1/auth')
 export class AuthController {
-  constructor(
-    private readonly commandBus: CommandBus,
-  ) {}
+  constructor(private readonly commandBus: CommandBus) {}
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
@@ -41,10 +39,7 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  async login(
-    @Body() body: LoginBodyDto,
-    @Headers('user-agent') userAgent: string,
-  ): Promise<any> {
+  async login(@Body() body: LoginBodyDto, @Headers('user-agent') userAgent: string): Promise<any> {
     const { email, password } = body
 
     const result = await this.commandBus.execute<LoginCommand, LoginResponseDto>(
@@ -55,10 +50,7 @@ export class AuthController {
 
   @Post('google-login')
   @HttpCode(HttpStatus.OK)
-  async googleLogin(
-    @Body() body: GoogleLoginBodyDto,
-    @Headers('user-agent') userAgent: string,
-  ): Promise<any> {
+  async googleLogin(@Body() body: GoogleLoginBodyDto, @Headers('user-agent') userAgent: string): Promise<any> {
     const { credential } = body
 
     const result = await this.commandBus.execute<GoogleLoginCommand, LoginResponseDto>(
@@ -72,9 +64,7 @@ export class AuthController {
   async verifyEmail(@Body() body: VerifyEmailBodyDto): Promise<any> {
     const { email, otp } = body
 
-    await this.commandBus.execute<VerifyEmailCommand>(
-      new VerifyEmailCommand(email, otp),
-    )
+    await this.commandBus.execute<VerifyEmailCommand>(new VerifyEmailCommand(email, otp))
     return { message: 'Verify email succesfully!' }
   }
 
@@ -83,9 +73,7 @@ export class AuthController {
   async forgotPassword(@Body() body: ForgotPasswordBodyDto): Promise<any> {
     const { email } = body
 
-    await this.commandBus.execute<ForgotPasswordCommand>(
-      new ForgotPasswordCommand(email),
-    )
+    await this.commandBus.execute<ForgotPasswordCommand>(new ForgotPasswordCommand(email))
     return { message: 'OTP đã được gửi đến email của bạn' }
   }
 
@@ -94,23 +82,16 @@ export class AuthController {
   async resetPassword(@Body() body: ResetPasswordBodyDto): Promise<any> {
     const { email, otp, newPassword } = body
 
-    await this.commandBus.execute<ResetPasswordCommand>(
-      new ResetPasswordCommand(email, otp, newPassword),
-    )
+    await this.commandBus.execute<ResetPasswordCommand>(new ResetPasswordCommand(email, otp, newPassword))
     return { message: 'Đặt lại mật khẩu thành công' }
   }
 
   @Post('refresh-token')
   @HttpCode(HttpStatus.OK)
-  async refreshToken(
-    @Body() body: RefreshTokenBodyDto,
-    @Headers('user-agent') userAgent: string,
-  ): Promise<any> {
+  async refreshToken(@Body() body: RefreshTokenBodyDto, @Headers('user-agent') userAgent: string): Promise<any> {
     const { refreshToken } = body
 
-    const result = await this.commandBus.execute<RefreshTokenCommand>(
-      new RefreshTokenCommand(refreshToken, userAgent),
-    )
+    const result = await this.commandBus.execute<RefreshTokenCommand>(new RefreshTokenCommand(refreshToken, userAgent))
     return { message: 'Refresh token succesfully!', data: result }
   }
 
@@ -118,8 +99,8 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async verify(
     @Headers('Authorization') auth_header: string,
-    @Headers('x-original-method') method: string,   // Kong forward header
-    @Headers('x-original-uri') uri: string,          // Kong forward header
+    @Headers('x-original-method') method: string, // Kong forward header
+    @Headers('x-original-uri') uri: string, // Kong forward header
   ): Promise<any> {
     const accessToken = auth_header.replace('Bearer ', '').trim()
 
@@ -127,23 +108,16 @@ export class AuthController {
       new VerifyRequestCommand(accessToken, method, uri),
     )
 
-    return result 
+    return result
   }
 
   @Post('logout')
   @HttpCode(HttpStatus.OK)
-  async logout(
-    @Headers('Authorization') auth_header: string,
-    @Headers('user-agent') userAgent: string,
-  ): Promise<any> {
+  async logout(@Headers('Authorization') auth_header: string, @Headers('user-agent') userAgent: string): Promise<any> {
     const accessToken = auth_header.replace('Bearer ', '').trim()
-    
-    await this.commandBus.execute(
-      new LogoutCommand(accessToken, userAgent),
-    )
+
+    await this.commandBus.execute(new LogoutCommand(accessToken, userAgent))
 
     return { message: 'Logout succesfully!' }
   }
 }
-
-

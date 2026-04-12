@@ -12,16 +12,16 @@ export class WalletRepository implements IWalletRepository {
     const walletData = await this.prisma.wallet.findUnique({
       where: { userId },
     })
-    
+
     if (!walletData) return null
-    
+
     return WalletMapper.toDomain(walletData)
   }
 
   async save(wallet: Wallet, tx?: any): Promise<Wallet> {
     const client = tx ?? this.prisma
     const data = WalletMapper.toPersistence(wallet)
-    
+
     const saved = await client.wallet.upsert({
       where: { userId: wallet.userId },
       update: data,

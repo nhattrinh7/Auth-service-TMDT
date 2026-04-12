@@ -45,7 +45,7 @@ export class RegisterHandler implements ICommandHandler<RegisterCommand, Registe
     // Lấy id của role mặc định là role Customer
     const customerRole = await this.roleRepository.findDefaultRole()
     if (!customerRole) throw new ConflictException('Default role not found')
-    
+
     const user = User.create({
       email,
       roleId: customerRole.id,
@@ -61,7 +61,7 @@ export class RegisterHandler implements ICommandHandler<RegisterCommand, Registe
     user.emailVerifyOtp!.code = hashedOTP
 
     // Wrap DB writes trong transaction
-    const createdUser = await this.prismaService.transaction(async (tx) => {
+    const createdUser = await this.prismaService.transaction(async tx => {
       const createdUser = await this.userRepository.save(user, tx)
 
       // Tạo wallet cho user sau khi tạo user thành công
