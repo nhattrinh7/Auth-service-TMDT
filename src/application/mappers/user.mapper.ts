@@ -10,14 +10,14 @@ export class UserMapper {
       roleId: user.roleId,
       fullName: user.fullName.value, // ← Extract string
       phoneNumber: user.phoneNumber.value, // ← Extract string
-      dob: user.dob,
+      dob: user.dob.toISOString(),
       gender: user.gender,
       avatar: user.avatar,
       status: user.status,
       require2FA: user.require2FA,
       emailVerified: user.emailVerified,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
+      createdAt: user.createdAt.toISOString(),
+      updatedAt: user.updatedAt.toISOString(),
     }
   }
 
@@ -38,14 +38,14 @@ export class UserMapper {
         roleId: user.roleId,
         fullName: user.fullName.value,
         phoneNumber: user.phoneNumber.value,
-        dob: user.dob,
+        dob: user.dob.toISOString(),
         gender: user.gender,
         avatar: user.avatar,
         status: user.status,
         require2FA: user.require2FA,
         emailVerified: user.emailVerified,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
+        createdAt: user.createdAt.toISOString(),
+        updatedAt: user.updatedAt.toISOString(),
         roleName: roleName,
         permissions: permissions,
       },

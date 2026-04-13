@@ -32,7 +32,7 @@ export class AuthController {
     const { email, password, fullName, phoneNumber, dob, gender } = body
 
     const result = await this.commandBus.execute<RegisterCommand, RegisterResponseDto>(
-      new RegisterCommand(email, password, fullName, phoneNumber, dob, gender),
+      new RegisterCommand(email, password, fullName, phoneNumber, new Date(dob), gender),
     )
     return { message: 'Register succesfully!', data: result }
   }
