@@ -21,7 +21,7 @@ export class RabbitMQPublisher implements IMessagePublisher {
   }
 
   publishToNotificationService<T>(pattern: string, event: T): void {
-    this.logger.debug(`[${getKongRequestId()}] Emit ${pattern} → notification-service`)
+    this.logger.log(`[${getKongRequestId()}] Emit ${pattern} → notification-service`)
     this.notificationClient.emit(pattern, this.buildRecord(event))
   }
 }
